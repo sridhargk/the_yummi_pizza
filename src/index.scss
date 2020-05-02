@@ -1,12 +1,14 @@
+@import "variables.scss";
+
 body {
   margin: 0;
-  font-family: "Quicksand", sans-serif;
+  font-family: $mainFont;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 .logo-font {
-  font-family: "Lobster", cursive;
+  font-family: $logoFont;
 }
 
 code {
