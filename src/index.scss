@@ -22,11 +22,167 @@ code {
   box-shadow: rgb(210, 221, 233) 5px 5px 5px;
   transition: all 1s ease-in-out 0s;
   .nav-link {
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 500;
     text-transform: uppercase;
   }
   .nav-link.active {
     font-weight: 700;
+  }
+}
+
+/** HomePage CSS **/
+.home-section {
+  margin-top: 1.75rem;
+}
+
+.category-section {
+  .card {
+    margin-right: 3rem;
+    margin-bottom: 3rem;
+  }
+  .image-wrapper {
+    width: 100%;
+    height: 8.5rem;
+  }
+  .card img {
+    width: 100%;
+    height: 100%;
+  }
+  img.custom-card-image {
+    max-width: 100%;
+    max-height: 9rem;
+    border-radius: 3px 3px 0px 0px;
+  }
+  .shadow-image-over {
+    background-image: url(./images/shadow.svg);
+    min-width: 0.3em;
+    min-height: 0.3em;
+    background-size: 100% 100%;
+    width: 7rem;
+    height: 5rem;
+    position: absolute;
+    bottom: 0px;
+    background-repeat: no-repeat;
+    top: 3.5rem;
+  }
+  h5.image-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    position: absolute;
+    top: 6.5rem;
+    left: 0.9rem;
+  }
+  .card-body {
+    padding: 0.9rem;
+  }
+  .card-title {
+    margin-bottom: 0.5rem;
+  }
+  .h5 {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  p.card-text {
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+  }
+  .action-container {
+    display: flex;
+    flex-direction: row;
+    .dropdown-section,
+    .action-button-section {
+      display: inline-flex;
+      width: 50%;
+      flex-flow: column nowrap;
+    }
+    .dropdown-section {
+      align-items: flex-start;
+      .dropdown-label {
+        width: 1.3rem;
+        height: 0.81rem;
+        font-size: 0.69rem;
+        color: rgba(122, 122, 122, 0.87);
+        margin-bottom: 0.2rem;
+      }
+      button.btn:focus {
+        box-shadow: none;
+      }
+      button.btn {
+        display: flex;
+        justify-content: space-between;
+        width: 75%;
+        height: 1.2rem;
+        padding: 0rem;
+        padding-bottom: 0.1rem;
+        font-weight: 600;
+        font-size: 0.68rem;
+        line-height: unset;
+        position: relative;
+        background: transparent;
+        color: black;
+        border: none;
+        border-radius: 0;
+        border-bottom: 1px solid rgba(122, 122, 122, 0.87);
+      }
+      button.btn:after {
+        display: none;
+      }
+      .btn .arrow {
+        background-image: url(./images/down_arrow_filled.svg);
+        min-width: 0.3em;
+        min-height: 0.3em;
+        background-size: 100% 100%;
+        margin-left: 0.6em;
+        margin-top: 0.4em;
+        width: 1em;
+        font-weight: 600;
+        background-repeat: no-repeat;
+      }
+      .dropdown-menu {
+        .dropdown-item {
+          display: flex;
+          flex-wrap: nowrap;
+          flex-direction: row;
+          padding: 0.5em;
+          .product-size-container {
+            width: 100%;
+            display: flex;
+            .size {
+              display: flex;
+              flex-direction: column;
+              font-size: 0.7rem;
+              font-weight: 500;
+              color: rgba(21, 21, 21, 0.87);
+              flex: 1 1 0%;
+              .size-name {
+                font-size: 0.7rem;
+                font-weight: 500;
+                color: rgba(21, 21, 21, 0.87);
+              }
+              .size-description {
+                margin-top: 0.2rem;
+              }
+            }
+            .price {
+              font-size: 0.7rem;
+              font-weight: 500;
+              color: $secondaryColor;
+            }
+          }
+        }
+      }
+    }
+    .action-button-section {
+      align-items: end;
+      button.btn {
+        padding: 0.433rem !important;
+        font-weight: 600;
+        font-size: 0.68rem;
+        width: 66%;
+        text-transform: uppercase;
+      }
+    }
   }
 }

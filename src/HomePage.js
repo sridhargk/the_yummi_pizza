@@ -1,0 +1,75 @@
+import React, { Component } from "react";
+import { Container, Row, Col } from "react-bootstrap";
+import ProductComponent from "./ProductComponent";
+
+class HomePage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      products: [
+        {
+          id: 1,
+          image: "https://images.dominos.co.in/new_margherita_2502.jpg",
+          prices: [
+            {
+              id: 3,
+              size: "Regular",
+              description: "Handtossed regular size pizza",
+              price: 99,
+            },
+            {
+              id: 4,
+              size: "Medium",
+              description: "Handtossed medium size pizza",
+              price: 199,
+            },
+            {
+              id: 5,
+              size: "Large",
+              description: "Handtossed large size pizza",
+              price: 299,
+            },
+          ],
+          name: "Margherita",
+          description: "A classic delight with 100% Real mozzarella cheese",
+        },
+      ],
+    };
+    this.addToCart = this.addToCart.bind(this);
+  }
+  addToCart(cartItem) {
+    console.log("Item to be added in cart: ", cartItem);
+  }
+  render() {
+    return (
+      <div className="home-section">
+        <Container fluid>
+          <Row>
+            <Col md={9}>
+              <div className="category-section">
+                <Container fluid>
+                  <Row>
+                    <Col md={4}>
+                      {this.state.products.map((product) => {
+                        return (
+                          <ProductComponent
+                            key={product.id}
+                            product={product}
+                            triggerAddToCart={this.addToCart}
+                          />
+                        );
+                      })}
+                    </Col>
+                  </Row>
+                </Container>
+              </div>
+            </Col>
+            <Col md={3}></Col>
+          </Row>
+        </Container>
+      </div>
+    );
+  }
+}
+
+export default HomePage;
