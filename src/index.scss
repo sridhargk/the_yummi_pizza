@@ -35,6 +35,25 @@ code {
   margin: 1.5rem 0px 0px 0.5rem;
 }
 
+.no-product-card {
+  margin-top: 4.3rem;
+  .card-body {
+    margin-bottom: 8rem;
+    .card-title {
+      margin-top: 14rem;
+      font-size: 1.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #718091;
+    }
+    .card-subtitle {
+      font-size: 1rem;
+      color: rgb(105, 129, 158);
+      padding-top: 0.2rem;
+    }
+  }
+}
+
 .cart-container {
   position: relative;
   min-height: 28rem;
@@ -46,6 +65,29 @@ code {
   background: rgb(255, 255, 255);
   transition: all 1s ease 0s;
   margin-top: 1.25rem;
+  .cart-text-wrapper {
+    -webkit-box-align: center;
+    align-items: center;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin-top: 14rem;
+    padding: 1.25rem;
+    .main-text {
+      font-size: 1.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: rgb(113, 128, 145);
+      width: 100%;
+    }
+    .sub-text {
+      font-size: 1rem;
+      color: rgb(105, 129, 158);
+      padding-top: 0.2rem;
+      width: 100%;
+    }
+  }
   .container-header {
     border-width: 1.6px;
     border-style: solid;
@@ -261,6 +303,50 @@ code {
 }
 
 /** CheckoutPage CSS **/
+.empty-cart {
+  display: flex;
+  flex-direction: column;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+  top: 60%;
+  left: 40%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  background: rgb(255, 255, 255);
+  padding: 4rem 0px;
+  .cart-text-wrapper {
+    -webkit-box-align: center;
+    align-items: center;
+    text-align: center;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin-top: 7rem;
+    padding: 1.25rem;
+    .main-text {
+      font-size: 1.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: rgb(113, 128, 145);
+      width: 100%;
+    }
+    .sub-text {
+      font-size: 1rem;
+      color: rgb(105, 129, 158);
+      padding-top: 0.2rem;
+      width: 100%;
+    }
+    .btn {
+      margin-top: 1.25rem;
+      font-weight: 600;
+    }
+  }
+}
 .data-card {
   display: flex;
   flex-wrap: wrap;
