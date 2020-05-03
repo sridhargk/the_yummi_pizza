@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import HomePage from "./HomePage";
-import CheckoutPage from "./CheckoutPage";
-import HeaderComponent from "./HeaderComponent";
+import HomePage from "./pages/HomePage";
+import CheckoutPage from "./pages/CheckoutPage";
+import HeaderComponent from "./components/HeaderComponent";
 
 class App extends Component {
   render() {

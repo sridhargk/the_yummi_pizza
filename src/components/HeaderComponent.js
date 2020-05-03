@@ -9,7 +9,7 @@ class HeaderComponent extends Component {
           <Navbar.Brand className="logo-font" href="/">
             <img
               alt=""
-              src={require("./images/pizza512.png")}
+              src={require("../images/pizza512.png")}
               width="30"
               height="30"
               className="d-inline-block align-top"

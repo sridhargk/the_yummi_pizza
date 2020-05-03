@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import CartComponent from "./CartComponent";
+import CartComponent from "../components/CartComponent";
 
 class CheckoutPage extends Component {
   constructor(props) {

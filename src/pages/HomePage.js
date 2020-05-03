@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import ProductComponent from "./ProductComponent";
-import CartComponent from "./CartComponent";
+import ProductComponent from "../components/ProductComponent";
+import CartComponent from "../components/CartComponent";
 
 class HomePage extends Component {
   constructor(props) {
