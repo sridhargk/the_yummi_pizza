@@ -1,4 +1,4 @@
-@import "~bootstrap/scss/bootstrap";
+@import "custom.scss";
 @import "variables.scss";
 
 body {
@@ -15,4 +15,18 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+/** Header CSS **/
+.shadowed-nav {
+  box-shadow: rgb(210, 221, 233) 5px 5px 5px;
+  transition: all 1s ease-in-out 0s;
+  .nav-link {
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  .nav-link.active {
+    font-weight: 700;
+  }
 }
