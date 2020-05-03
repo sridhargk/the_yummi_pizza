@@ -14,8 +14,38 @@ class HomePage extends Component {
     };
     this.addToCart = this.addToCart.bind(this);
   }
+  updateQuantityPrice = (cart, product, productCartIndex) => {
+    const cartProducts = [...cart];
+    const selectedProductInCart = cartProducts[productCartIndex];
+    const selectedProductQuantityUpdated = {
+      ...selectedProductInCart,
+      quantity: selectedProductInCart.quantity + product.quantity,
+      price:
+        selectedProductInCart.price *
+        (selectedProductInCart.quantity + product.quantity),
+    };
+    cartProducts[productCartIndex] = selectedProductQuantityUpdated;
+    return cartProducts;
+  };
   addToCart(cartItem) {
-    console.log("Item to be added in cart: ", cartItem);
+    const productCartIndex = this.state.cartItems.findIndex(
+      (item) => item.name === cartItem.name
+    );
+    let updatedCartItems =
+      productCartIndex >= 0
+        ? this.updateQuantityPrice(
+            this.state.cartItems,
+            cartItem,
+            productCartIndex
+          )
+        : [...this.state.cartItems, cartItem];
+    this.setState({
+      cartItems: updatedCartItems,
+      subTotal: updatedCartItems.reduce(
+        (accumulator, item) => accumulator + item.price,
+        0
+      ),
+    });
   }
   componentDidMount() {
     fetch("http://localhost:8000/api/products")
@@ -23,8 +53,6 @@ class HomePage extends Component {
       .then((result) => {
         this.setState({
           products: result.data,
-          cartItems: [],
-          subTotal: 0,
         });
       });
   }

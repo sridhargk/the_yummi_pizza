@@ -408,6 +408,7 @@ code {
   height: 82%;
   overflow-y: scroll;
   padding: 0px 1rem;
+  position: absolute;
 }
 .display-type1 {
   .row.main-row {
@@ -470,6 +471,9 @@ code {
     height: 0.9rem;
     margin: 0px 0.3rem;
     background-repeat: no-repeat;
+  }
+  .decrease-btn-box.minus-icon {
+    background-image: url(./images/minus.svg);
   }
   .quantity-value {
     font-weight: 600;

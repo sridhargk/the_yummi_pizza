@@ -26,7 +26,11 @@ class CartComponent extends Component {
             <Row className="cart-data-section">
               <Col sm={6} className="cart-quantity-section">
                 <div className="quantity-box">
-                  <div className="decrease-btn-box"></div>
+                  <div
+                    className={`decrease-btn-box ${
+                      cartItem.quantity > 1 ? "minus-icon" : ""
+                    }`}
+                  ></div>
                   <span className="quantity-value">{cartItem.quantity}</span>
                   <div className="increase-btn-box"></div>
                 </div>
@@ -66,7 +70,11 @@ class CartComponent extends Component {
                       </div>
                       <div className="cart-item-quantity-container">
                         <div className="quantity-box">
-                          <div className="decrease-btn-box"></div>
+                          <div
+                            className={`decrease-btn-box ${
+                              cartItem.quantity > 1 ? "minus-icon" : ""
+                            }`}
+                          ></div>
                           <span className="quantity-value">
                             {cartItem.quantity}
                           </span>
