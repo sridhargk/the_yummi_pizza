@@ -8,32 +8,39 @@ class HomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      products: [
+      categorizedProducts: [
         {
           id: 1,
-          image: "https://images.dominos.co.in/new_margherita_2502.jpg",
-          prices: [
+          name: "Category 1",
+          description: "Category description",
+          products: [
             {
-              id: 3,
-              size: "Regular",
-              description: "Handtossed regular size pizza",
-              price: 99,
-            },
-            {
-              id: 4,
-              size: "Medium",
-              description: "Handtossed medium size pizza",
-              price: 199,
-            },
-            {
-              id: 5,
-              size: "Large",
-              description: "Handtossed large size pizza",
-              price: 299,
+              id: 1,
+              image: "https://images.dominos.co.in/new_margherita_2502.jpg",
+              prices: [
+                {
+                  id: 3,
+                  size: "Regular",
+                  description: "Handtossed regular size pizza",
+                  price: 99,
+                },
+                {
+                  id: 4,
+                  size: "Medium",
+                  description: "Handtossed medium size pizza",
+                  price: 199,
+                },
+                {
+                  id: 5,
+                  size: "Large",
+                  description: "Handtossed large size pizza",
+                  price: 299,
+                },
+              ],
+              name: "Margherita",
+              description: "A classic delight with 100% Real mozzarella cheese",
             },
           ],
-          name: "Margherita",
-          description: "A classic delight with 100% Real mozzarella cheese",
         },
       ],
       cartItems: [
@@ -59,25 +66,37 @@ class HomePage extends Component {
         <Container fluid>
           <Row>
             <Col md={9}>
-              <div className="category-section">
-                <Container fluid>
-                  <Row>
-                    <Col md={4}>
-                      {this.state.products.map((product) => {
-                        return (
-                          <ProductComponent
-                            key={product.id}
-                            product={product}
-                            triggerAddToCart={this.addToCart}
-                          />
-                        );
-                      })}
-                    </Col>
-                  </Row>
-                </Container>
-              </div>
+              {this.state.categorizedProducts.map((categorized) => {
+                return (
+                  <div className="category-section" key={categorized.id}>
+                    <div className="sub-heading">
+                      <div className="sub-heading-title">
+                        {categorized.name}
+                      </div>
+                    </div>
+                    <Container fluid className="category-products-container">
+                      <Row key={categorized.id}>
+                        <Col md={4}>
+                          {categorized.products.map((product) => {
+                            return (
+                              <ProductComponent
+                                key={product.id}
+                                product={product}
+                                triggerAddToCart={this.addToCart}
+                              />
+                            );
+                          })}
+                        </Col>
+                      </Row>
+                    </Container>
+                  </div>
+                );
+              })}
             </Col>
             <Col md={3}>
+              <div className="sub-heading">
+                <div className="sub-heading-title">Cart</div>
+              </div>
               <div className="cart-container">
                 <hr className="container-header"></hr>
                 <div className="cart-items">

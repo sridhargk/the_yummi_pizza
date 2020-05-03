@@ -29,6 +29,12 @@ code {
   margin-top: 1.75rem;
 }
 
+.sub-heading {
+  display: flex;
+  font-weight: 600;
+  margin: 1.5rem 0px 0px 0.5rem;
+}
+
 .cart-container {
   position: relative;
   min-height: 28rem;
@@ -39,6 +45,7 @@ code {
     rgba(0, 0, 0, 0.12) 0px 2px 4px 0px;
   background: rgb(255, 255, 255);
   transition: all 1s ease 0s;
+  margin-top: 1.25rem;
   .container-header {
     border-width: 1.6px;
     border-style: solid;
@@ -97,6 +104,9 @@ code {
 
 /** ProductComponent CSS **/
 .category-section {
+  .category-products-container {
+    margin-top: 1.25rem;
+  }
   .card {
     margin-right: 3rem;
     margin-bottom: 3rem;
@@ -251,13 +261,6 @@ code {
 }
 
 /** CheckoutPage CSS **/
-.sub-heading {
-  display: flex;
-  font-weight: 600;
-  margin: 1.5rem 0px 0px 0.5rem;
-  .sub-heading-title {
-  }
-}
 .data-card {
   display: flex;
   flex-wrap: wrap;
