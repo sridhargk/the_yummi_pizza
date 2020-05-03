@@ -1,18 +1,18 @@
 import React, { Component } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import Home from "./Home";
-import Checkout from "./Checkout";
-import Header from "./Header";
+import HomePage from "./HomePage";
+import CheckoutPage from "./CheckoutPage";
+import HeaderComponent from "./HeaderComponent";
 
 class App extends Component {
   render() {
     return (
       <BrowserRouter>
         <div className="main-app">
-          <Header />
+          <HeaderComponent />
           <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/checkout" component={Checkout} />
+            <Route exact path="/" component={HomePage} />
+            <Route exact path="/checkout" component={CheckoutPage} />
           </Switch>
         </div>
       </BrowserRouter>

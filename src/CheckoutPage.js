@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 
-class Checkout extends Component {
+class CheckoutPage extends Component {
   render() {
     return <div></div>;
   }
 }
 
-export default Checkout;
+export default CheckoutPage;
