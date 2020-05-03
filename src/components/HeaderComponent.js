@@ -1,11 +1,16 @@
 import React, { Component } from "react";
-import { Navbar, Nav } from "react-bootstrap";
+import { Navbar } from "react-bootstrap";
 
 class HeaderComponent extends Component {
   render() {
     return (
       <div>
-        <Navbar bg="primary" variant="dark" sticky="top">
+        <Navbar
+          bg="primary"
+          variant="dark"
+          sticky="top"
+          className="shadowed-nav"
+        >
           <Navbar.Brand className="logo-font" href="/">
             <img
               alt=""
@@ -16,19 +21,6 @@ class HeaderComponent extends Component {
             />{" "}
             The Yummi Pizza
           </Navbar.Brand>
-        </Navbar>
-        <Navbar bg="light" sticky="top" className="shadowed-nav">
-          <Nav fill defaultActiveKey="/" as="ul">
-            <Nav.Item as="li">
-              <Nav.Link href="/">Active</Nav.Link>
-            </Nav.Item>
-            <Nav.Item as="li">
-              <Nav.Link eventKey="link-1">Link</Nav.Link>
-            </Nav.Item>
-            <Nav.Item as="li">
-              <Nav.Link eventKey="link-2">Link</Nav.Link>
-            </Nav.Item>
-          </Nav>
         </Navbar>
       </div>
     );

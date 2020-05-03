@@ -22,14 +22,6 @@ code {
 .shadowed-nav {
   box-shadow: rgb(210, 221, 233) 5px 5px 5px;
   transition: all 1s ease-in-out 0s;
-  .nav-link {
-    font-size: 1rem;
-    font-weight: 500;
-    text-transform: uppercase;
-  }
-  .nav-link.active {
-    font-weight: 700;
-  }
 }
 
 /** Common CSS **/
