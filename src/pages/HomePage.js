@@ -8,7 +8,7 @@ class HomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      categorizedProducts: [],
+      products: [],
       cartItems: [],
       subTotal: 0,
     };
@@ -17,14 +17,26 @@ class HomePage extends Component {
   addToCart(cartItem) {
     console.log("Item to be added in cart: ", cartItem);
   }
+  componentDidMount() {
+    fetch("http://localhost:8000/api/products")
+      .then((response) => response.json())
+      .then((result) => {
+        this.setState({
+          products: result.data,
+          cartItems: [],
+          subTotal: 0,
+        });
+      });
+  }
   render() {
+    const { products, cartItems, subTotal } = this.state;
     let cartContainerData;
-    if (this.state.cartItems.length > 0) {
+    if (cartItems.length > 0) {
       cartContainerData = (
         <div>
           <hr className="container-header"></hr>
           <div className="cart-items">
-            {this.state.cartItems.map((cartItem) => {
+            {cartItems.map((cartItem) => {
               return (
                 <CartComponent
                   key={cartItem.id}
@@ -38,7 +50,7 @@ class HomePage extends Component {
             <div className="footer-price-container">
               <span className="ftr-cntnr-title">Sub Total</span>
               <span className="ftr-cntnr-price">
-                {getPriceInEuros(this.state.subTotal)}
+                {getPriceInEuros(subTotal)}
               </span>
             </div>
             <div className="footer-btn-container">
@@ -66,43 +78,41 @@ class HomePage extends Component {
         <Container fluid>
           <Row>
             <Col md={9}>
-              {this.state.categorizedProducts.length > 0 ? (
-                this.state.categorizedProducts.map((categorized) => {
-                  return (
-                    <div className="category-section" key={categorized.id}>
-                      <div className="sub-heading">
-                        <div className="sub-heading-title">
-                          {categorized.name}
-                        </div>
-                      </div>
-                      <Container fluid className="category-products-container">
-                        <Row key={categorized.id}>
-                          <Col md={4}>
-                            {categorized.products.map((product) => {
-                              return (
-                                <ProductComponent
-                                  key={product.id}
-                                  product={product}
-                                  triggerAddToCart={this.addToCart}
-                                />
-                              );
-                            })}
-                          </Col>
-                        </Row>
-                      </Container>
-                    </div>
-                  );
-                })
-              ) : (
-                <Card className="no-product-card">
-                  <Card.Body>
-                    <Card.Title>No Products Found.</Card.Title>
-                    <Card.Subtitle>
-                      Try adding in backend or inform dev
-                    </Card.Subtitle>
-                  </Card.Body>
-                </Card>
-              )}
+              <div className="category-section">
+                <div className="sub-heading">
+                  <div className="sub-heading-title">Menu</div>
+                </div>
+                <Container fluid className="category-products-container">
+                  <Row>
+                    {products.length > 0 ? (
+                      products.map((product) => {
+                        if (product.prices.length > 0) {
+                          return (
+                            <Col md={4} key={product.id}>
+                              <ProductComponent
+                                key={product.id}
+                                product={product}
+                                triggerAddToCart={this.addToCart}
+                              />
+                            </Col>
+                          );
+                        } else {
+                          return "";
+                        }
+                      })
+                    ) : (
+                      <Card className="no-product-card">
+                        <Card.Body>
+                          <Card.Title>No Products Found.</Card.Title>
+                          <Card.Subtitle>
+                            Try adding in backend or inform dev
+                          </Card.Subtitle>
+                        </Card.Body>
+                      </Card>
+                    )}
+                  </Row>
+                </Container>
+              </div>
             </Col>
             <Col md={3}>
               <div className="sub-heading">
