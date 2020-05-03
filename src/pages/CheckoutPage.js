@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import CartComponent from "../components/CartComponent";
+import { getPriceInEuros } from "../utils";
 
 class CheckoutPage extends Component {
   constructor(props) {
@@ -16,6 +17,9 @@ class CheckoutPage extends Component {
           quantity: 1,
         },
       ],
+      subTotal: 200,
+      tax: 25,
+      payableAmount: 225,
     };
   }
   render() {
@@ -53,15 +57,21 @@ class CheckoutPage extends Component {
                 <div className="data-card-innerwrap">
                   <div className="text-wrapper">
                     <span className="text-title">Sub Total</span>
-                    <span className="text-value">0000</span>
+                    <span className="text-value">
+                      {getPriceInEuros(this.state.subTotal)}
+                    </span>
                   </div>
                   <div className="text-wrapper">
                     <span className="text-title">Tax</span>
-                    <span className="text-value">0000</span>
+                    <span className="text-value">
+                      {getPriceInEuros(this.state.tax)}
+                    </span>
                   </div>
                   <div className="text-wrapper text-total">
                     <span className="text-title">Grand Total</span>
-                    <span className="text-value">0000</span>
+                    <span className="text-value">
+                      {getPriceInEuros(this.state.payableAmount)}
+                    </span>
                   </div>
                   <div className="data-btn-container">
                     <Button variant="secondary" block>

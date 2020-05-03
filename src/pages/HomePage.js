@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import ProductComponent from "../components/ProductComponent";
 import CartComponent from "../components/CartComponent";
+import { getPriceInEuros } from "../utils";
 
 class HomePage extends Component {
   constructor(props) {
@@ -45,6 +46,7 @@ class HomePage extends Component {
           quantity: 1,
         },
       ],
+      subTotal: 200,
     };
     this.addToCart = this.addToCart.bind(this);
   }
@@ -91,8 +93,10 @@ class HomePage extends Component {
                 </div>
                 <div className="container-footer">
                   <div className="footer-price-container">
-                    <span className="ftr-cntnr-title">Subtotal</span>
-                    <span className="ftr-cntnr-price">0000</span>
+                    <span className="ftr-cntnr-title">Sub Total</span>
+                    <span className="ftr-cntnr-price">
+                      {getPriceInEuros(this.state.subTotal)}
+                    </span>
                   </div>
                   <div className="footer-btn-container">
                     <Button variant="secondary" block href="/checkout">

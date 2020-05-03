@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Card, Button, Dropdown } from "react-bootstrap";
+import { getPriceInEuros } from "../utils";
 
 class ProductComponent extends Component {
   constructor(props) {
@@ -43,7 +44,9 @@ class ProductComponent extends Component {
             className="custom-card-image"
           />
           <div className="shadow-image-over"></div>
-          <h5 className="image-text">{this.state.selectedSize.price}</h5>
+          <h5 className="image-text">
+            {getPriceInEuros(this.state.selectedSize.price)}
+          </h5>
         </div>
         <Card.Body>
           <Card.Title>{product.name}</Card.Title>
@@ -81,7 +84,7 @@ class ProductComponent extends Component {
                         </span>
                       </span>
                       <span className="price">
-                        <b>{sizePrice.price}</b>
+                        <b>{getPriceInEuros(sizePrice.price)}</b>
                       </span>
                     </span>
                   </Dropdown.Item>

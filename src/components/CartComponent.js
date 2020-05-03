@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Row, Col } from "react-bootstrap";
+import { getPriceInEuros } from "../utils";
 
 class CartComponent extends Component {
   render() {
@@ -31,7 +32,7 @@ class CartComponent extends Component {
                 </div>
               </Col>
               <Col sm={6} className="cart-price">
-                {cartItem.price}
+                {getPriceInEuros(cartItem.price)}
               </Col>
             </Row>
           </Row>
@@ -60,7 +61,7 @@ class CartComponent extends Component {
                     <Col sm={3} className="last-col">
                       <div className="cart-item-price-container">
                         <span className="cart-item-price">
-                          {cartItem.price}
+                          {getPriceInEuros(cartItem.price)}
                         </span>
                       </div>
                       <div className="cart-item-quantity-container">
