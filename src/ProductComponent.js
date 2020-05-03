@@ -29,6 +29,7 @@ class ProductComponent extends Component {
       description: this.props.product.description,
       price: this.state.selectedSize.price,
       image: this.props.product.image,
+      id: this.props.product.id,
     });
   }
   render() {
