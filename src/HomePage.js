@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import ProductComponent from "./ProductComponent";
+import CartComponent from "./CartComponent";
 
 class HomePage extends Component {
   constructor(props) {
@@ -34,6 +35,16 @@ class HomePage extends Component {
           description: "A classic delight with 100% Real mozzarella cheese",
         },
       ],
+      cartItems: [
+        {
+          id: 2,
+          name: "Product1 - Size1",
+          description: "Lorem Ipsum Lorem IpsumLorem IpsumLorem Ipsum",
+          price: 99,
+          image: "https://images.dominos.co.in/new_margherita_2502.jpg",
+          quantity: 1,
+        },
+      ],
     };
     this.addToCart = this.addToCart.bind(this);
   }
@@ -42,7 +53,7 @@ class HomePage extends Component {
   }
   render() {
     return (
-      <div className="home-section">
+      <div className="main-section">
         <Container fluid>
           <Row>
             <Col md={9}>
@@ -64,7 +75,33 @@ class HomePage extends Component {
                 </Container>
               </div>
             </Col>
-            <Col md={3}></Col>
+            <Col md={3}>
+              <div className="cart-container">
+                <hr className="container-header"></hr>
+                <div className="cart-items">
+                  {this.state.cartItems.map((cartItem) => {
+                    return (
+                      <CartComponent
+                        key={cartItem.id}
+                        cartItem={cartItem}
+                        displayPage="homePage"
+                      />
+                    );
+                  })}
+                </div>
+                <div className="container-footer">
+                  <div className="footer-price-container">
+                    <span className="ftr-cntnr-title">Subtotal</span>
+                    <span className="ftr-cntnr-price">0000</span>
+                  </div>
+                  <div className="footer-btn-container">
+                    <Button variant="secondary" block href="/checkout">
+                      <b>CHECKOUT</b>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </Col>
           </Row>
         </Container>
       </div>
