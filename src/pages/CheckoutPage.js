@@ -99,7 +99,6 @@ class CheckoutPage extends Component {
             },
           });
         }
-        console.log(responseData);
       });
   };
   saveOrder = (customer) => {
@@ -158,6 +157,9 @@ class CheckoutPage extends Component {
             },
           });
           clear();
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 3000);
         } else {
           this.setState({
             loading: false,
