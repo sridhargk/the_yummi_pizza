@@ -3,6 +3,12 @@ import { Row, Col } from "react-bootstrap";
 import { getPriceInEuros } from "../utils";
 
 class CartComponent extends Component {
+  onAddQuantityBtnClick() {
+    this.props.triggerAddQuantityBtn(this.props.cartItem);
+  }
+  onSubtractQuantityBtnClick() {
+    this.props.triggerSubtractQuantityBtn(this.props.cartItem);
+  }
   render() {
     const { cartItem, displayPage } = this.props;
     if (displayPage === "homePage") {
@@ -30,9 +36,13 @@ class CartComponent extends Component {
                     className={`decrease-btn-box ${
                       cartItem.quantity > 1 ? "minus-icon" : ""
                     }`}
+                    onClick={this.onSubtractQuantityBtnClick}
                   ></div>
                   <span className="quantity-value">{cartItem.quantity}</span>
-                  <div className="increase-btn-box"></div>
+                  <div
+                    className="increase-btn-box"
+                    onClick={this.onAddQuantityBtnClick}
+                  ></div>
                 </div>
               </Col>
               <Col sm={6} className="cart-price">
@@ -74,11 +84,15 @@ class CartComponent extends Component {
                             className={`decrease-btn-box ${
                               cartItem.quantity > 1 ? "minus-icon" : ""
                             }`}
+                            onClick={this.onSubtractQuantityBtnClick}
                           ></div>
                           <span className="quantity-value">
                             {cartItem.quantity}
                           </span>
-                          <div className="increase-btn-box"></div>
+                          <div
+                            className="increase-btn-box"
+                            onClick={this.onAddQuantityBtnClick}
+                          ></div>
                         </div>
                       </div>
                     </Col>

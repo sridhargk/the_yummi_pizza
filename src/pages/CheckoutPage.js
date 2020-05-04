@@ -2,32 +2,58 @@ import React, { Component } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import CartComponent from "../components/CartComponent";
 import { getPriceInEuros } from "../utils";
+import { addQuantity, subtractQuantity } from "../actions/cartActions";
+import { connect } from "react-redux";
 
 class CheckoutPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cartItems: [],
       subTotal: 0,
       tax: 0,
       payableAmount: 0,
     };
+    const { cartItems } = this.props;
+    const subTotal = cartItems.reduce(
+      (accumulator, item) => accumulator + item.price,
+      0
+    );
+    this.setState({
+      subTotal: subTotal,
+    });
+    this.handleAddQuantity = this.handleAddQuantity.bind(this);
+    this.handleSubtractQuantity = this.handleSubtractQuantity.bind(this);
   }
+  handleAddQuantity = (cartItem) => {
+    this.props.addQuantity(cartItem);
+  };
+  handleSubtractQuantity = (cartItem) => {
+    this.props.subtractQuantity(cartItem);
+  };
   render() {
+    const { cartItems } = this.props;
     let cartItemContainer;
     let priceDetailsContainer;
-    if (this.state.cartItems.length > 0) {
+    if (cartItems.length > 0) {
       cartItemContainer = (
         <div>
           <div className="sub-heading">
-            <span className="sub-heading-title">0 Items you have selected</span>
+            <span className="sub-heading-title">
+              {cartItems.reduce(
+                (accumulator, item) => accumulator + item.quantity,
+                0
+              )}{" "}
+              Items you have selected
+            </span>
           </div>
-          {this.state.cartItems.map((cartItem) => {
+          {cartItems.map((cartItem) => {
             return (
               <CartComponent
                 key={cartItem.id}
                 cartItem={cartItem}
                 displayPage="checkoutPage"
+                triggerAddQuantityBtn={this.handleAddQuantity}
+                triggerSubtractQuantityBtn={this.handleSubtractQuantity}
               />
             );
           })}
@@ -104,4 +130,19 @@ class CheckoutPage extends Component {
   }
 }
 
-export default CheckoutPage;
+const mapStateToProps = ({ cartItems }) => {
+  return {
+    cartItems,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    subtractQuantity: (cartItem) => {
+      dispatch(subtractQuantity(cartItem));
+    },
+    addQuantity: (cartItem) => {
+      dispatch(addQuantity(cartItem));
+    },
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(CheckoutPage);

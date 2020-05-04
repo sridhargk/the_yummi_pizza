@@ -3,50 +3,32 @@ import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import ProductComponent from "../components/ProductComponent";
 import CartComponent from "../components/CartComponent";
 import { getPriceInEuros } from "../utils";
+import {
+  addToCart,
+  addQuantity,
+  subtractQuantity,
+} from "../actions/cartActions";
+import { connect } from "react-redux";
 
 class HomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       products: [],
-      cartItems: [],
-      subTotal: 0,
     };
-    this.addToCart = this.addToCart.bind(this);
+    this.handleAddToCart = this.handleAddToCart.bind(this);
+    this.handleAddQuantity = this.handleAddQuantity.bind(this);
+    this.handleSubtractQuantity = this.handleSubtractQuantity.bind(this);
   }
-  updateQuantityPrice = (cart, product, productCartIndex) => {
-    const cartProducts = [...cart];
-    const selectedProductInCart = cartProducts[productCartIndex];
-    const selectedProductQuantityUpdated = {
-      ...selectedProductInCart,
-      quantity: selectedProductInCart.quantity + product.quantity,
-      price:
-        selectedProductInCart.price *
-        (selectedProductInCart.quantity + product.quantity),
-    };
-    cartProducts[productCartIndex] = selectedProductQuantityUpdated;
-    return cartProducts;
+  handleAddToCart(cartItem) {
+    this.props.addToCart(cartItem);
+  }
+  handleAddQuantity = (cartItem) => {
+    this.props.addQuantity(cartItem);
   };
-  addToCart(cartItem) {
-    const productCartIndex = this.state.cartItems.findIndex(
-      (item) => item.name === cartItem.name
-    );
-    let updatedCartItems =
-      productCartIndex >= 0
-        ? this.updateQuantityPrice(
-            this.state.cartItems,
-            cartItem,
-            productCartIndex
-          )
-        : [...this.state.cartItems, cartItem];
-    this.setState({
-      cartItems: updatedCartItems,
-      subTotal: updatedCartItems.reduce(
-        (accumulator, item) => accumulator + item.price,
-        0
-      ),
-    });
-  }
+  handleSubtractQuantity = (cartItem) => {
+    this.props.subtractQuantity(cartItem);
+  };
   componentDidMount() {
     fetch("http://localhost:8000/api/products")
       .then((response) => response.json())
@@ -57,7 +39,8 @@ class HomePage extends Component {
       });
   }
   render() {
-    const { products, cartItems, subTotal } = this.state;
+    const { products } = this.state;
+    const { cartItems } = this.props;
     let cartContainerData;
     if (cartItems.length > 0) {
       cartContainerData = (
@@ -70,6 +53,8 @@ class HomePage extends Component {
                   key={cartItem.id}
                   cartItem={cartItem}
                   displayPage="homePage"
+                  triggerAddQuantityBtn={this.handleAddQuantity}
+                  triggerSubtractQuantityBtn={this.handleSubtractQuantity}
                 />
               );
             })}
@@ -78,7 +63,12 @@ class HomePage extends Component {
             <div className="footer-price-container">
               <span className="ftr-cntnr-title">Sub Total</span>
               <span className="ftr-cntnr-price">
-                {getPriceInEuros(subTotal)}
+                {getPriceInEuros(
+                  cartItems.reduce(
+                    (accumulator, item) => accumulator + item.price,
+                    0
+                  )
+                )}
               </span>
             </div>
             <div className="footer-btn-container">
@@ -120,7 +110,7 @@ class HomePage extends Component {
                               <ProductComponent
                                 key={product.id}
                                 product={product}
-                                triggerAddToCart={this.addToCart}
+                                triggerAddToCart={this.handleAddToCart}
                               />
                             </Col>
                           );
@@ -155,4 +145,23 @@ class HomePage extends Component {
   }
 }
 
-export default HomePage;
+const mapStateToProps = ({ cartItems }) => {
+  return {
+    cartItems,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addToCart: (cartItem) => {
+      dispatch(addToCart(cartItem));
+    },
+    subtractQuantity: (cartItem) => {
+      dispatch(subtractQuantity(cartItem));
+    },
+    addQuantity: (cartItem) => {
+      dispatch(addQuantity(cartItem));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
