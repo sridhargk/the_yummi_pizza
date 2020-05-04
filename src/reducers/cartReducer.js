@@ -7,19 +7,11 @@ import {
 const initialState = [];
 
 export default function cartReducer(state = initialState, action = {}) {
-  /***
-   * ACTION: {
-   *  type: "STRING",
-   *  payload: "DATA"
-   * }
-   */
-
-  console.log("action: ", action);
   const cartItem = action.cartItem;
   const cartItems = state;
 
   switch (action.type) {
-    case ADD_TO_CART:
+    case ADD_TO_CART: // Add to cart reducer
       const existingProductIndex = findCartItemIndex(cartItems, cartItem.name);
       const updatedCart =
         existingProductIndex >= 0
@@ -27,9 +19,9 @@ export default function cartReducer(state = initialState, action = {}) {
           : [...cartItems, cartItem];
 
       return updatedCart;
-    case SUB_QUANTITY:
+    case SUB_QUANTITY: // Reduce item quantity in cart
       return updateCartItemUnits(cartItems, cartItem, "minus");
-    case ADD_QUANTITY:
+    case ADD_QUANTITY: // Add item quantity in cart
       return updateCartItemUnits(cartItems, cartItem);
     default:
       return state;

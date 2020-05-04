@@ -6,11 +6,11 @@ import "./index.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import reducers from "./reducers";
-import { save, load } from "redux-localstorage-simple";
+import { save, load } from "redux-localstorage-simple"; // for redux state presists
 
-const createStoreWithMiddleware = applyMiddleware(save())(createStore);
+const createStoreWithMiddleware = applyMiddleware(save())(createStore); // save states while updating
 
-const store = createStoreWithMiddleware(reducers, load());
+const store = createStoreWithMiddleware(reducers, load()); // loads saved states automatically
 
 ReactDOM.render(
   <Provider store={store}>

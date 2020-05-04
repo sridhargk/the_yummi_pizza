@@ -22,13 +22,13 @@ class CheckoutPage extends Component {
     let totalQuantity = cartItems.reduce(
       (accumulator, item) => accumulator + item.quantity,
       0
-    );
+    ); // Total choosed quantity
     subTotal = cartItems.reduce(
       (accumulator, item) => accumulator + item.price,
       0
-    );
-    tax = (subTotal * 7) / 100;
-    payableAmount = totalQuantity > 10 ? 10 + subTotal + tax : subTotal + tax;
+    ); // Subtotal from calculated prices
+    tax = (subTotal * 7) / 100; // vat @ 7%
+    payableAmount = totalQuantity > 10 ? 10 + subTotal + tax : subTotal + tax; // total with delivery logic
     let cartItemContainer;
     let priceDetailsContainer;
     if (cartItems.length > 0) {
