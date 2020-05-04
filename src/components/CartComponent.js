@@ -3,6 +3,14 @@ import { Row, Col } from "react-bootstrap";
 import { getPriceInEuros } from "../utils";
 
 class CartComponent extends Component {
+  constructor(props) {
+    super(props);
+
+    this.onAddQuantityBtnClick = this.onAddQuantityBtnClick.bind(this);
+    this.onSubtractQuantityBtnClick = this.onSubtractQuantityBtnClick.bind(
+      this
+    );
+  }
   onAddQuantityBtnClick() {
     this.props.triggerAddQuantityBtn(this.props.cartItem);
   }

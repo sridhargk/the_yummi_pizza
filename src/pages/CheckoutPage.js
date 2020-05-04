@@ -13,14 +13,6 @@ class CheckoutPage extends Component {
       tax: 0,
       payableAmount: 0,
     };
-    const { cartItems } = this.props;
-    const subTotal = cartItems.reduce(
-      (accumulator, item) => accumulator + item.price,
-      0
-    );
-    this.setState({
-      subTotal: subTotal,
-    });
     this.handleAddQuantity = this.handleAddQuantity.bind(this);
     this.handleSubtractQuantity = this.handleSubtractQuantity.bind(this);
   }
@@ -32,6 +24,7 @@ class CheckoutPage extends Component {
   };
   render() {
     const { cartItems } = this.props;
+    console.log(this.props);
     let cartItemContainer;
     let priceDetailsContainer;
     if (cartItems.length > 0) {

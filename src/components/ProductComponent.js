@@ -38,6 +38,7 @@ class ProductComponent extends Component {
       price: this.state.selectedSize.price,
       image: this.props.product.image,
       product_id: this.props.product.id,
+      product_price: this.state.selectedSize.price,
       quantity: 1,
       id: parseInt("" + this.props.product.id + this.state.selectedSize.id),
     });
