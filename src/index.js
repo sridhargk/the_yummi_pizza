@@ -1,16 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import "./index.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import reducers from "./reducers";
+import { save, load } from "redux-localstorage-simple";
 
-const createdStore = createStore(reducers);
+const createStoreWithMiddleware = applyMiddleware(save())(createStore);
+
+const store = createStoreWithMiddleware(reducers, load());
 
 ReactDOM.render(
-  <Provider store={createdStore}>
+  <Provider store={store}>
     <App />
   </Provider>,
   document.getElementById("root")

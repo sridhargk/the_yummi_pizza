@@ -8,11 +8,6 @@ import { connect } from "react-redux";
 class CheckoutPage extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      subTotal: 0,
-      tax: 0,
-      payableAmount: 0,
-    };
     this.handleAddQuantity = this.handleAddQuantity.bind(this);
     this.handleSubtractQuantity = this.handleSubtractQuantity.bind(this);
   }
@@ -23,8 +18,17 @@ class CheckoutPage extends Component {
     this.props.subtractQuantity(cartItem);
   };
   render() {
-    const { cartItems } = this.props;
-    console.log(this.props);
+    let { cartItems, subTotal, tax, payableAmount } = this.props;
+    let totalQuantity = cartItems.reduce(
+      (accumulator, item) => accumulator + item.quantity,
+      0
+    );
+    subTotal = cartItems.reduce(
+      (accumulator, item) => accumulator + item.price,
+      0
+    );
+    tax = (subTotal * 7) / 100;
+    payableAmount = totalQuantity > 10 ? 10 + subTotal + tax : subTotal + tax;
     let cartItemContainer;
     let priceDetailsContainer;
     if (cartItems.length > 0) {
@@ -32,11 +36,7 @@ class CheckoutPage extends Component {
         <div>
           <div className="sub-heading">
             <span className="sub-heading-title">
-              {cartItems.reduce(
-                (accumulator, item) => accumulator + item.quantity,
-                0
-              )}{" "}
-              Items you have selected
+              {totalQuantity} Items you have selected
             </span>
           </div>
           {cartItems.map((cartItem) => {
@@ -61,20 +61,24 @@ class CheckoutPage extends Component {
             <div className="data-card-innerwrap">
               <div className="text-wrapper">
                 <span className="text-title">Sub Total</span>
-                <span className="text-value">
-                  {getPriceInEuros(this.state.subTotal)}
-                </span>
+                <span className="text-value">{getPriceInEuros(subTotal)}</span>
               </div>
               <div className="text-wrapper">
-                <span className="text-title">Tax</span>
-                <span className="text-value">
-                  {getPriceInEuros(this.state.tax)}
-                </span>
+                <span className="text-title">Tax - VAT @ 7%</span>
+                <span className="text-value">{getPriceInEuros(tax)}</span>
               </div>
+              {totalQuantity > 10 ? (
+                <div className="text-wrapper">
+                  <span className="text-title">Delivery</span>
+                  <span className="text-value">{getPriceInEuros(10)}</span>
+                </div>
+              ) : (
+                ""
+              )}
               <div className="text-wrapper text-total">
                 <span className="text-title">Grand Total</span>
                 <span className="text-value">
-                  {getPriceInEuros(this.state.payableAmount)}
+                  {getPriceInEuros(payableAmount)}
                 </span>
               </div>
               <div className="data-btn-container">
@@ -107,15 +111,7 @@ class CheckoutPage extends Component {
         <Container fluid>
           <Row>
             <Col sm={9}>{cartItemContainer}</Col>
-            <Col sm={3}>
-              <div className="sub-heading">
-                <span className="sub-heading-title">
-                  Choose a delivery address
-                </span>
-              </div>
-              <div className="data-card"></div>
-              {priceDetailsContainer}
-            </Col>
+            <Col sm={3}>{priceDetailsContainer}</Col>
           </Row>
         </Container>
       </div>
