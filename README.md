@@ -1,3 +1,38 @@
+## The Yummi Pizza
+
+Assignment Task Application
+
+Application URL: https://the-yummi-pizza-app.herokuapp.com/
+
+### Pages
+
+- HomePage
+- CheckoutPage
+
+### Components
+
+- ProductsComponent
+- CartComponent
+- HeaderComponent
+- FormComponent
+- LoaderComponent
+
+Here like everyother react application, we have used redux for handling cart items with reducers.
+
+### Redux Actions
+
+- ADD_TO_CART
+- ADD_QUANTITY
+- SUBTRACT_QUANTITY
+
+For state management we have used free open source package named `redux-localstorage-simple`
+
+### Other Third Party Packages Used
+
+- bootstrap
+- react-bootstrap
+- node-sass
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
