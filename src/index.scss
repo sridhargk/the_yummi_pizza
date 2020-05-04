@@ -64,9 +64,12 @@ code {
 }
 
 .no-product-card {
-  margin-top: 4.3rem;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
   .card-body {
     margin-bottom: 8rem;
+    text-align: center;
     .card-title {
       margin-top: 14rem;
       font-size: 1.5rem;

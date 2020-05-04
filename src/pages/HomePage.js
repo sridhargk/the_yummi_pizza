@@ -10,6 +10,7 @@ import {
   subtractQuantity,
 } from "../actions/cartActions";
 import { connect } from "react-redux";
+import { clear } from "redux-localstorage-simple";
 
 class HomePage extends Component {
   constructor(props) {
@@ -32,7 +33,7 @@ class HomePage extends Component {
     this.props.subtractQuantity(cartItem);
   };
   componentDidMount() {
-    fetch("http://localhost:8000/api/products")
+    fetch(process.env.REACT_APP_API_URL + "/products")
       .then((response) => response.json())
       .then((result) => {
         this.setState({
@@ -93,6 +94,9 @@ class HomePage extends Component {
           </div>
         </div>
       );
+    }
+    if (products.length === 0) {
+      clear();
     }
     return (
       <div className="main-section">

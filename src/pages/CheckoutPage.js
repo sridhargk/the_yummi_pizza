@@ -67,7 +67,7 @@ class CheckoutPage extends Component {
       closeSidePanel: true,
       loading: true,
     });
-    fetch("http://localhost:8000/api/customers", {
+    fetch(process.env.REACT_APP_API_URL + "/customers", {
       method: "POST",
       body: JSON.stringify(formData),
       headers: { "Content-Type": "application/json" },
@@ -129,7 +129,7 @@ class CheckoutPage extends Component {
     order.tax = priceDetails.tax;
     order.payable_amount = priceDetails.payableAmount;
     order.items = orderItems;
-    fetch("http://localhost:8000/api/orders", {
+    fetch(process.env.REACT_APP_API_URL + "/orders", {
       method: "POST",
       body: JSON.stringify(order),
       headers: { "Content-Type": "application/json" },
