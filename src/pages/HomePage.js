@@ -35,12 +35,18 @@ class HomePage extends Component {
   componentDidMount() {
     fetch(process.env.REACT_APP_API_URL + "/products")
       .then((response) => response.json())
-      .then((result) => {
-        this.setState({
-          products: result.data,
-          loading: false,
-        });
-      });
+      .then(
+        (result) => {
+          this.setState({
+            products: result.data,
+            loading: false,
+          });
+        },
+        (error) => {
+          console.error(error);
+          this.setState({ loading: false });
+        }
+      );
   }
   render() {
     const { products, loading } = this.state;
