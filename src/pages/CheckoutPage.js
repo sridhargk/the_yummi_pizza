@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import CartComponent from "../components/CartComponent";
+import FormComponent from "../components/FormComponent";
+import LoaderComponent from "../components/LoaderComponent";
 import { getPriceInEuros } from "../utils";
 import { addQuantity, subtractQuantity } from "../actions/cartActions";
 import { connect } from "react-redux";
@@ -8,8 +10,17 @@ import { connect } from "react-redux";
 class CheckoutPage extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      closeSidePanel: true,
+      order: {},
+      loading: false,
+    };
     this.handleAddQuantity = this.handleAddQuantity.bind(this);
     this.handleSubtractQuantity = this.handleSubtractQuantity.bind(this);
+    this.closeSidePanel = this.closeSidePanel.bind(this);
+    this.placeOrder = this.placeOrder.bind(this);
+    this.saveCustomerDetails = this.saveCustomerDetails.bind(this);
+    this.saveOrder = this.saveOrder.bind(this);
   }
   handleAddQuantity = (cartItem) => {
     this.props.addQuantity(cartItem);
@@ -17,9 +28,95 @@ class CheckoutPage extends Component {
   handleSubtractQuantity = (cartItem) => {
     this.props.subtractQuantity(cartItem);
   };
+  closeSidePanel = () => {
+    this.setState({
+      closeSidePanel: true,
+    });
+  };
+  placeOrder = () => {
+    let orderItems = [];
+    const cartItems = this.props.cartItems;
+    cartItems.map((cartItem) => {
+      orderItems.push({
+        name: cartItem.name,
+        description: cartItem.description,
+        product_id: cartItem.product_id,
+        quantity: cartItem.quantity,
+        price: cartItem.product_price,
+        total: cartItem.price,
+      });
+      return "";
+    });
+    this.setState({
+      closeSidePanel: false,
+      order: {
+        total_quantity: this.props.totalQuantity,
+        total_amount: this.props.subTotal,
+        tax: this.props.tax,
+        payable_amount: this.props.payableAmount,
+        items: orderItems,
+      },
+    });
+  };
+  saveCustomerDetails = (formData) => {
+    this.setState({
+      closeSidePanel: true,
+      loading: true,
+    });
+    fetch("http://localhost:8000/api/customers", {
+      method: "POST",
+      body: JSON.stringify(formData),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => response.json())
+      .catch((error) => {
+        this.setState({
+          loading: false,
+        });
+        console.error(error);
+      })
+      .then((responseData) => {
+        this.setState({
+          loading: false,
+        });
+        if (responseData.success) {
+          this.saveOrder(responseData.data);
+        }
+        console.log(responseData);
+      });
+  };
+  saveOrder = (customer) => {
+    this.setState({
+      loading: true,
+    });
+    const order = this.state.order;
+    order.customer_id = customer.id;
+    order.name = customer.first_name + " " + customer.last_name;
+    order.delivery_address = customer.house_number + ", " + customer.address;
+    order.locality = customer.locality;
+    fetch("http://localhost:8000/api/orders", {
+      method: "POST",
+      body: order,
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => response.json())
+      .catch((error) => {
+        this.setState({
+          loading: false,
+        });
+        console.error(error);
+      })
+      .then((responseData) => {
+        this.setState({
+          loading: false,
+        });
+        console.log(responseData);
+      });
+  };
   render() {
-    let { cartItems, subTotal, tax, payableAmount } = this.props;
-    let totalQuantity = cartItems.reduce(
+    let { cartItems, subTotal, tax, payableAmount, totalQuantity } = this.props;
+    let { closeSidePanel, loading } = this.state;
+    totalQuantity = cartItems.reduce(
       (accumulator, item) => accumulator + item.quantity,
       0
     ); // Total choosed quantity
@@ -82,7 +179,7 @@ class CheckoutPage extends Component {
                 </span>
               </div>
               <div className="data-btn-container">
-                <Button variant="secondary" block>
+                <Button variant="secondary" block onClick={this.placeOrder}>
                   PLACE ORDER
                 </Button>
               </div>
@@ -108,12 +205,21 @@ class CheckoutPage extends Component {
     }
     return (
       <div className="main-section">
+        <LoaderComponent loading={loading} />
         <Container fluid>
           <Row>
             <Col sm={9}>{cartItemContainer}</Col>
             <Col sm={3}>{priceDetailsContainer}</Col>
           </Row>
         </Container>
+        {closeSidePanel ? (
+          ""
+        ) : (
+          <FormComponent
+            triggerCloseSidePanel={this.closeSidePanel}
+            triggerCustomerSave={this.saveCustomerDetails}
+          />
+        )}
       </div>
     );
   }

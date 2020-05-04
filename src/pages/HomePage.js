@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
+import LoaderComponent from "../components/LoaderComponent";
 import ProductComponent from "../components/ProductComponent";
 import CartComponent from "../components/CartComponent";
 import { getPriceInEuros } from "../utils";
@@ -15,6 +16,7 @@ class HomePage extends Component {
     super(props);
     this.state = {
       products: [],
+      loading: true,
     };
     this.handleAddToCart = this.handleAddToCart.bind(this);
     this.handleAddQuantity = this.handleAddQuantity.bind(this);
@@ -35,11 +37,12 @@ class HomePage extends Component {
       .then((result) => {
         this.setState({
           products: result.data,
+          loading: false,
         });
       });
   }
   render() {
-    const { products } = this.state;
+    const { products, loading } = this.state;
     const { cartItems } = this.props;
     let cartContainerData;
     if (cartItems.length > 0) {
@@ -93,6 +96,7 @@ class HomePage extends Component {
     }
     return (
       <div className="main-section">
+        <LoaderComponent loading={loading} />
         <Container fluid>
           <Row>
             <Col md={9}>
