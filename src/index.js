@@ -1,13 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { createStore, applyMiddleware } from "redux";
+import { Provider } from "react-redux";
 import "./index.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
+import reducers from "./reducers";
+import { save, load } from "redux-localstorage-simple"; // for redux state presists
+
+const createStoreWithMiddleware = applyMiddleware(save())(createStore); // save states while updating
+
+const store = createStoreWithMiddleware(reducers, load()); // loads saved states automatically
 
 ReactDOM.render(
-  <React.StrictMode>
+  <Provider store={store}>
     <App />
-  </React.StrictMode>,
+  </Provider>,
   document.getElementById("root")
 );
 

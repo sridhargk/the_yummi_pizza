@@ -9,6 +9,8 @@ class ProductComponent extends Component {
       selectedSize: {
         size: this.props.product.prices[0].size,
         price: this.props.product.prices[0].price,
+        description: this.props.product.prices[0].description,
+        id: this.props.product.prices[0].id,
       },
     };
 
@@ -21,16 +23,24 @@ class ProductComponent extends Component {
       selectedSize: {
         size: selectedSize.size,
         price: selectedSize.price,
+        description: selectedSize.description,
+        id: selectedSize.id,
       },
     });
   }
   onAddToCartBtnClick() {
     this.props.triggerAddToCart({
       name: this.props.product.name + " - " + this.state.selectedSize.size,
-      description: this.props.product.description,
+      description:
+        this.props.product.description +
+        " - " +
+        this.state.selectedSize.description,
       price: this.state.selectedSize.price,
       image: this.props.product.image,
-      id: this.props.product.id,
+      product_id: this.props.product.id,
+      product_price: this.state.selectedSize.price,
+      quantity: 1,
+      id: parseInt("" + this.props.product.id + this.state.selectedSize.id),
     });
   }
   render() {

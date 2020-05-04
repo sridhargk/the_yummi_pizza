@@ -1,35 +1,64 @@
 import React, { Component } from "react";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
+import LoaderComponent from "../components/LoaderComponent";
 import ProductComponent from "../components/ProductComponent";
 import CartComponent from "../components/CartComponent";
 import { getPriceInEuros } from "../utils";
+import {
+  addToCart,
+  addQuantity,
+  subtractQuantity,
+} from "../actions/cartActions";
+import { connect } from "react-redux";
+import { clear } from "redux-localstorage-simple";
 
 class HomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      categorizedProducts: [],
-      cartItems: [],
-      subTotal: 0,
+      products: [],
+      loading: true,
     };
-    this.addToCart = this.addToCart.bind(this);
+    this.handleAddToCart = this.handleAddToCart.bind(this);
+    this.handleAddQuantity = this.handleAddQuantity.bind(this);
+    this.handleSubtractQuantity = this.handleSubtractQuantity.bind(this);
   }
-  addToCart(cartItem) {
-    console.log("Item to be added in cart: ", cartItem);
+  handleAddToCart(cartItem) {
+    this.props.addToCart(cartItem);
+  }
+  handleAddQuantity = (cartItem) => {
+    this.props.addQuantity(cartItem);
+  };
+  handleSubtractQuantity = (cartItem) => {
+    this.props.subtractQuantity(cartItem);
+  };
+  componentDidMount() {
+    fetch(process.env.REACT_APP_API_URL + "/products")
+      .then((response) => response.json())
+      .then((result) => {
+        this.setState({
+          products: result.data,
+          loading: false,
+        });
+      });
   }
   render() {
+    const { products, loading } = this.state;
+    const { cartItems } = this.props;
     let cartContainerData;
-    if (this.state.cartItems.length > 0) {
+    if (cartItems.length > 0) {
       cartContainerData = (
         <div>
           <hr className="container-header"></hr>
           <div className="cart-items">
-            {this.state.cartItems.map((cartItem) => {
+            {cartItems.map((cartItem) => {
               return (
                 <CartComponent
                   key={cartItem.id}
                   cartItem={cartItem}
                   displayPage="homePage"
+                  triggerAddQuantityBtn={this.handleAddQuantity}
+                  triggerSubtractQuantityBtn={this.handleSubtractQuantity}
                 />
               );
             })}
@@ -38,7 +67,12 @@ class HomePage extends Component {
             <div className="footer-price-container">
               <span className="ftr-cntnr-title">Sub Total</span>
               <span className="ftr-cntnr-price">
-                {getPriceInEuros(this.state.subTotal)}
+                {getPriceInEuros(
+                  cartItems.reduce(
+                    (accumulator, item) => accumulator + item.price,
+                    0
+                  )
+                )}
               </span>
             </div>
             <div className="footer-btn-container">
@@ -61,48 +95,50 @@ class HomePage extends Component {
         </div>
       );
     }
+    if (products.length === 0) {
+      clear();
+    }
     return (
       <div className="main-section">
+        <LoaderComponent loading={loading} />
         <Container fluid>
           <Row>
             <Col md={9}>
-              {this.state.categorizedProducts.length > 0 ? (
-                this.state.categorizedProducts.map((categorized) => {
-                  return (
-                    <div className="category-section" key={categorized.id}>
-                      <div className="sub-heading">
-                        <div className="sub-heading-title">
-                          {categorized.name}
-                        </div>
-                      </div>
-                      <Container fluid className="category-products-container">
-                        <Row key={categorized.id}>
-                          <Col md={4}>
-                            {categorized.products.map((product) => {
-                              return (
-                                <ProductComponent
-                                  key={product.id}
-                                  product={product}
-                                  triggerAddToCart={this.addToCart}
-                                />
-                              );
-                            })}
-                          </Col>
-                        </Row>
-                      </Container>
-                    </div>
-                  );
-                })
-              ) : (
-                <Card className="no-product-card">
-                  <Card.Body>
-                    <Card.Title>No Products Found.</Card.Title>
-                    <Card.Subtitle>
-                      Try adding in backend or inform dev
-                    </Card.Subtitle>
-                  </Card.Body>
-                </Card>
-              )}
+              <div className="category-section">
+                <div className="sub-heading">
+                  <div className="sub-heading-title">Menu</div>
+                </div>
+                <Container fluid className="category-products-container">
+                  <Row>
+                    {products.length > 0 ? (
+                      products.map((product) => {
+                        if (product.prices.length > 0) {
+                          return (
+                            <Col md={4} key={product.id}>
+                              <ProductComponent
+                                key={product.id}
+                                product={product}
+                                triggerAddToCart={this.handleAddToCart}
+                              />
+                            </Col>
+                          );
+                        } else {
+                          return "";
+                        }
+                      })
+                    ) : (
+                      <Card className="no-product-card">
+                        <Card.Body>
+                          <Card.Title>No Products Found.</Card.Title>
+                          <Card.Subtitle>
+                            Try adding in backend or inform dev
+                          </Card.Subtitle>
+                        </Card.Body>
+                      </Card>
+                    )}
+                  </Row>
+                </Container>
+              </div>
             </Col>
             <Col md={3}>
               <div className="sub-heading">
@@ -117,4 +153,23 @@ class HomePage extends Component {
   }
 }
 
-export default HomePage;
+const mapStateToProps = ({ cartItems }) => {
+  return {
+    cartItems,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addToCart: (cartItem) => {
+      dispatch(addToCart(cartItem));
+    },
+    subtractQuantity: (cartItem) => {
+      dispatch(subtractQuantity(cartItem));
+    },
+    addQuantity: (cartItem) => {
+      dispatch(addQuantity(cartItem));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
