@@ -50,6 +50,13 @@ code {
   }
 }
 
+.alert {
+  width: 60%;
+  position: absolute;
+  z-index: 9999;
+  left: 20rem;
+}
+
 .sub-heading {
   display: flex;
   font-weight: 600;
