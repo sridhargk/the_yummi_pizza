@@ -153,6 +153,10 @@ class CheckoutPage extends Component {
       });
   };
 
+  navigateToHomePage = () => {
+    window.location.href = "/";
+  };
+
   render() {
     let { cartItems, subTotal, tax, payableAmount, totalQuantity } = this.props;
     let { closeSidePanel, loading, alert } = this.state;
@@ -171,11 +175,21 @@ class CheckoutPage extends Component {
     if (cartItems.length > 0) {
       cartItemContainer = (
         <div>
-          <div className="sub-heading">
-            <span className="sub-heading-title">
-              {totalQuantity} Items you have selected
-            </span>
-          </div>
+          <Row>
+            <Col md="9">
+              <div className="sub-heading">
+                <span className="sub-heading-title">
+                  {totalQuantity} Items you have selected
+                </span>
+              </div>
+            </Col>
+            <Col md="3" className="sub-heading-btn">
+              <Button variant="link" onClick={this.navigateToHomePage}>
+                <b>EXPLORE MORE</b>
+              </Button>
+            </Col>
+          </Row>
+
           {cartItems.map((cartItem) => {
             return (
               <CartComponent

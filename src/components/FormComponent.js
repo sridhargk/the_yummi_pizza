@@ -108,6 +108,16 @@ class FormComponent extends Component {
                   "Customer Email is not registered, Please proceed as New Customer",
                 show: true,
               },
+              customer: {
+                first_name: "",
+                last_name: "",
+                phone: "",
+                email: "",
+                address: "",
+                house_number: "",
+                locality: "",
+              },
+              existingCustomer: false,
             });
           }
         } else {
@@ -157,15 +167,18 @@ class FormComponent extends Component {
             this.props.triggerOrderSave(responseData.data);
           }, 2000);
         } else {
+          const warningMessage = responseData.data.email ? (
+            responseData.data.email[0]
+          ) : (
+            <>
+              <Alert.Heading>{responseData.message}</Alert.Heading>
+              <pre>{JSON.stringify(responseData.data, null, 4)}</pre>
+            </>
+          );
           this.setState({
             alert: {
               variant: "warning",
-              message: (
-                <>
-                  <Alert.Heading>{responseData.message}</Alert.Heading>
-                  <pre>{JSON.stringify(responseData.data, null, 4)}</pre>
-                </>
-              ),
+              message: warningMessage,
               show: true,
             },
             loading: false,
@@ -209,6 +222,7 @@ class FormComponent extends Component {
         <div className="form-heading">New Customer</div>
         <Form
           key="newCustomerForm"
+          class="new-customer-form"
           validated={validated}
           onSubmit={this.handleAddCustomer}
         >
@@ -327,7 +341,7 @@ class FormComponent extends Component {
           onSubmit={this.handleGetCustomer}
         >
           <Form.Row>
-            <Form.Group as={Col} md="8" controlId="formGridEmailAddress">
+            <Form.Group as={Col} md="7" controlId="formGridEmailAddress">
               <Form.Control
                 type="email"
                 placeholder="Email Address"
@@ -340,7 +354,7 @@ class FormComponent extends Component {
                 Please provide a valid email address
               </Form.Control.Feedback>
             </Form.Group>
-            <Col md="4">
+            <Col md="5">
               <Button variant="secondary" type="submit" block>
                 Get Address
               </Button>

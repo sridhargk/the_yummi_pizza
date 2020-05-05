@@ -65,6 +65,11 @@ code {
   margin: 1.5rem 0px 0px 0.5rem;
 }
 
+.sub-heading-btn {
+  margin-top: 1.25rem;
+  text-align: right;
+}
+
 .no-product-card {
   width: 100%;
   flex-direction: row;
@@ -676,6 +681,9 @@ code {
         color: rgb(95, 136, 163);
         font-weight: bold;
         margin: 1.88rem 2rem 0px;
+      }
+      form.new-customer-form {
+        padding-bottom: 4rem;
       }
       form {
         padding: 0px 2rem 1rem;

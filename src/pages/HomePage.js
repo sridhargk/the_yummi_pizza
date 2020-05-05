@@ -47,6 +47,7 @@ class HomePage extends Component {
         },
         (error) => {
           console.error(error);
+          this.props.removeItems([]);
           this.setState({ loading: false });
         }
       );
