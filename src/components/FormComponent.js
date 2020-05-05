@@ -225,6 +225,7 @@ class FormComponent extends Component {
           class="new-customer-form"
           validated={validated}
           onSubmit={this.handleAddCustomer}
+          style={{ paddingBottom: "4rem" }}
         >
           <Form.Row>
             <Form.Group as={Col} controlId="formGridFirstName">
