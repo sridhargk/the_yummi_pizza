@@ -24,20 +24,23 @@ class CheckoutPage extends Component {
     this.closeSidePanel = this.closeSidePanel.bind(this);
     this.placeOrder = this.placeOrder.bind(this);
     this.getPriceDetails = this.getPriceDetails.bind(this);
-    this.saveCustomerDetails = this.saveCustomerDetails.bind(this);
     this.saveOrder = this.saveOrder.bind(this);
   }
+
   handleAddQuantity = (cartItem) => {
     this.props.addQuantity(cartItem);
   };
+
   handleSubtractQuantity = (cartItem) => {
     this.props.subtractQuantity(cartItem);
   };
+
   closeSidePanel = () => {
     this.setState({
       closeSidePanel: true,
     });
   };
+
   getPriceDetails = (cartItems) => {
     const totalQuantity = cartItems.reduce(
       (accumulator, item) => accumulator + item.quantity,
@@ -48,8 +51,7 @@ class CheckoutPage extends Component {
       0
     );
     const tax = (subTotal * 7) / 100;
-    const payableAmount =
-      totalQuantity > 10 ? 10 + subTotal + tax : subTotal + tax;
+    const payableAmount = subTotal + tax + 10;
     return {
       totalQuantity: totalQuantity,
       subTotal: subTotal,
@@ -57,50 +59,13 @@ class CheckoutPage extends Component {
       payableAmount: payableAmount,
     };
   };
+
   placeOrder = () => {
     this.setState({
       closeSidePanel: false,
     });
   };
-  saveCustomerDetails = (formData) => {
-    this.setState({
-      closeSidePanel: true,
-      loading: true,
-    });
-    fetch(process.env.REACT_APP_API_URL + "/customers", {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((response) => response.json())
-      .catch((error) => {
-        this.setState({
-          loading: false,
-          alert: {
-            variant: "danger",
-            message: error.message,
-            show: true,
-          },
-        });
-        console.error(error);
-      })
-      .then((responseData) => {
-        this.setState({
-          loading: false,
-        });
-        if (responseData.success) {
-          this.saveOrder(responseData.data);
-        } else {
-          this.setState({
-            alert: {
-              variant: "danger",
-              message: responseData.message,
-              show: true,
-            },
-          });
-        }
-      });
-  };
+
   saveOrder = (customer) => {
     this.setState({
       loading: true,
@@ -172,6 +137,7 @@ class CheckoutPage extends Component {
         }
       });
   };
+
   render() {
     let { cartItems, subTotal, tax, payableAmount, totalQuantity } = this.props;
     let { closeSidePanel, loading, alert } = this.state;
@@ -184,7 +150,7 @@ class CheckoutPage extends Component {
       0
     ); // Subtotal from calculated prices
     tax = (subTotal * 7) / 100; // vat @ 7%
-    payableAmount = totalQuantity > 10 ? 10 + subTotal + tax : subTotal + tax; // total with delivery logic
+    payableAmount = subTotal + tax + 10;
     let cartItemContainer;
     let priceDetailsContainer;
     if (cartItems.length > 0) {
@@ -223,14 +189,10 @@ class CheckoutPage extends Component {
                 <span className="text-title">Tax - VAT @ 7%</span>
                 <span className="text-value">{getPriceInEuros(tax)}</span>
               </div>
-              {totalQuantity > 10 ? (
-                <div className="text-wrapper">
-                  <span className="text-title">Delivery</span>
-                  <span className="text-value">{getPriceInEuros(10)}</span>
-                </div>
-              ) : (
-                ""
-              )}
+              <div className="text-wrapper">
+                <span className="text-title">Delivery</span>
+                <span className="text-value">{getPriceInEuros(10)}</span>
+              </div>
               <div className="text-wrapper text-total">
                 <span className="text-title">Grand Total</span>
                 <span className="text-value">
@@ -279,7 +241,7 @@ class CheckoutPage extends Component {
         ) : (
           <FormComponent
             triggerCloseSidePanel={this.closeSidePanel}
-            triggerCustomerSave={this.saveCustomerDetails}
+            triggerOrderSave={this.saveOrder}
           />
         )}
       </div>

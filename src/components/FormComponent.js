@@ -1,10 +1,13 @@
 import React, { Component } from "react";
-import { Form, Button, Col } from "react-bootstrap";
+import { Form, Button, Col, Alert } from "react-bootstrap";
 
 class FormComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      getCustomer: {
+        email: "",
+      },
       formFields: {
         first_name: "",
         last_name: "",
@@ -16,14 +19,21 @@ class FormComponent extends Component {
       },
       validated: false,
       setValidated: false,
+      alert: {
+        variant: "",
+        message: "",
+        show: false,
+      },
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleAddCustomer = this.handleAddCustomer.bind(this);
+    this.handleGetCustomer = this.handleGetCustomer.bind(this);
+    this.saveCustomerDetails = this.saveCustomerDetails.bind(this);
     this.inputChangeHandler = this.inputChangeHandler.bind(this);
     this.handleCloseSidePanel = this.handleCloseSidePanel.bind(this);
   }
 
-  handleSubmit = (event) => {
+  handleAddCustomer = (event) => {
     event.preventDefault();
     event.stopPropagation();
     const form = event.currentTarget;
@@ -32,10 +42,59 @@ class FormComponent extends Component {
         validated: false,
       });
     } else {
-      this.props.triggerCustomerSave(this.state.formFields);
+      this.saveCustomerDetails(this.state.formFields);
     }
 
     this.setState({ setValidated: true });
+  };
+
+  handleGetCustomer = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (this.state.getCustomer.email) {
+    }
+  };
+
+  saveCustomerDetails = (formData) => {
+    fetch(process.env.REACT_APP_API_URL + "/customers", {
+      method: "POST",
+      body: JSON.stringify(formData),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.error(error);
+        this.setState({
+          alert: {
+            variant: "danger",
+            message: error.message,
+            show: true,
+          },
+        });
+      })
+      .then((responseData) => {
+        if (responseData.success) {
+          this.setState({
+            alert: {
+              variant: "success",
+              message: responseData.message,
+              state: true,
+            },
+          });
+          setTimeout(() => {
+            // Trigger Save Order
+            this.props.triggerOrderSave();
+          }, 2000);
+        } else {
+          this.setState({
+            alert: {
+              variant: "warning",
+              message: responseData.message,
+              state: true,
+            },
+          });
+        }
+      });
   };
 
   inputChangeHandler(e) {
@@ -51,7 +110,7 @@ class FormComponent extends Component {
   }
 
   render() {
-    const { validated } = this.state;
+    const { validated, alert } = this.state;
     return (
       <>
         <div className="overlay"></div>
@@ -62,11 +121,24 @@ class FormComponent extends Component {
         <div className="side-navigation">
           <div className="overlay-child">
             <div className="wrap">
+              <Alert variant={alert.variant} show={alert.show} dismissible>
+                {alert.message}
+              </Alert>
               <div className="header-title">
                 <span>Add Address</span>
               </div>
+              <div className="form-heading">Existing Customer</div>
+              <Form
+                key="existingCustomer"
+                validated={validated}
+                onSubmit={this.handleGetCustomer}
+              ></Form>
               <div className="form-heading">Fill details below</div>
-              <Form validated={validated} onSubmit={this.handleSubmit}>
+              <Form
+                key="newCustomer"
+                validated={validated}
+                onSubmit={this.handleAddCustomer}
+              >
                 <Form.Row>
                   <Form.Group as={Col} controlId="formGridFirstName">
                     <Form.Control
