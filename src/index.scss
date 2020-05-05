@@ -51,10 +51,12 @@ code {
 }
 
 .alert {
-  width: 60%;
+  width: 75%;
   position: absolute;
   z-index: 9999;
-  left: 20rem;
+  margin: 1rem auto;
+  left: 0;
+  right: 0;
 }
 
 .sub-heading {
@@ -452,6 +454,7 @@ code {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
+    border-radius: 3px;
   }
   .cart-product {
     display: flex;
@@ -678,6 +681,16 @@ code {
         padding: 0px 2rem 1rem;
         .form-row {
           margin: 2rem 0;
+          margin-bottom: 0;
+        }
+      }
+      .display-wrapper {
+        padding: 2rem;
+        .row {
+          margin-bottom: 1.25rem;
+          .display-title {
+            font-size: 0.75rem;
+          }
         }
       }
     }

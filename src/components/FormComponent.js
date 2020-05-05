@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Form, Button, Col, Alert } from "react-bootstrap";
+import { Form, Button, Row, Col, Alert } from "react-bootstrap";
+import LoaderComponent from "../components/LoaderComponent";
 
 class FormComponent extends Component {
   constructor(props) {
@@ -8,7 +9,7 @@ class FormComponent extends Component {
       getCustomer: {
         email: "",
       },
-      formFields: {
+      customer: {
         first_name: "",
         last_name: "",
         phone: "",
@@ -24,14 +25,27 @@ class FormComponent extends Component {
         message: "",
         show: false,
       },
+      existingCustomer: false,
+      loading: false,
     };
 
     this.handleAddCustomer = this.handleAddCustomer.bind(this);
     this.handleGetCustomer = this.handleGetCustomer.bind(this);
     this.saveCustomerDetails = this.saveCustomerDetails.bind(this);
+    this.getCustomerDetails = this.getCustomerDetails.bind(this);
     this.inputChangeHandler = this.inputChangeHandler.bind(this);
+    this.inputChangeHandler2 = this.inputChangeHandler2.bind(this);
     this.handleCloseSidePanel = this.handleCloseSidePanel.bind(this);
+    this.closeAlert = this.closeAlert.bind(this);
   }
+
+  closeAlert = () => {
+    this.setState({
+      alert: {
+        show: false,
+      },
+    });
+  };
 
   handleAddCustomer = (event) => {
     event.preventDefault();
@@ -42,9 +56,11 @@ class FormComponent extends Component {
         validated: false,
       });
     } else {
-      this.saveCustomerDetails(this.state.formFields);
+      this.setState({
+        loading: true,
+      });
+      this.saveCustomerDetails(this.state.customer);
     }
-
     this.setState({ setValidated: true });
   };
 
@@ -52,7 +68,60 @@ class FormComponent extends Component {
     event.preventDefault();
     event.stopPropagation();
     if (this.state.getCustomer.email) {
+      this.setState({
+        loading: true,
+      });
+      this.getCustomerDetails(this.state.getCustomer.email);
+    } else {
+      this.setState({
+        alert: {
+          variant: "danger",
+          message: "Please enter a valid email address",
+          show: true,
+        },
+      });
     }
+  };
+
+  getCustomerDetails = (email) => {
+    fetch(process.env.REACT_APP_API_URL + "/customer_by_email", {
+      method: "POST",
+      body: JSON.stringify({ email: email }),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .catch((error) => console.error(error))
+      .then((response) => {
+        if (response.success) {
+          if (response.data.length > 0) {
+            this.setState({
+              customer: response.data[0],
+              existingCustomer: true,
+              loading: false,
+            });
+          } else {
+            this.setState({
+              loading: false,
+              alert: {
+                variant: "warning",
+                message:
+                  "Customer Email is not registered, Please proceed as New Customer",
+                show: true,
+              },
+            });
+          }
+        } else {
+          console.error(response);
+          this.setState({
+            alert: {
+              variant: "danger",
+              message: response.message,
+              show: true,
+            },
+            loading: false,
+          });
+        }
+      });
   };
 
   saveCustomerDetails = (formData) => {
@@ -70,6 +139,7 @@ class FormComponent extends Component {
             message: error.message,
             show: true,
           },
+          loading: false,
         });
       })
       .then((responseData) => {
@@ -78,30 +148,45 @@ class FormComponent extends Component {
             alert: {
               variant: "success",
               message: responseData.message,
-              state: true,
+              show: true,
             },
+            loading: false,
           });
           setTimeout(() => {
             // Trigger Save Order
-            this.props.triggerOrderSave();
+            this.props.triggerOrderSave(responseData.data);
           }, 2000);
         } else {
           this.setState({
             alert: {
               variant: "warning",
-              message: responseData.message,
-              state: true,
+              message: (
+                <>
+                  <Alert.Heading>{responseData.message}</Alert.Heading>
+                  <pre>{JSON.stringify(responseData.data, null, 4)}</pre>
+                </>
+              ),
+              show: true,
             },
+            loading: false,
           });
         }
       });
   };
 
   inputChangeHandler(e) {
-    let formFields = { ...this.state.formFields };
-    formFields[e.target.name] = e.target.value;
+    let customer = { ...this.state.customer };
+    customer[e.target.name] = e.target.value;
     this.setState({
-      formFields,
+      customer,
+    });
+  }
+
+  inputChangeHandler2(e) {
+    let getCustomer = { ...this.state.getCustomer };
+    getCustomer[e.target.name] = e.target.value;
+    this.setState({
+      getCustomer,
     });
   }
 
@@ -110,7 +195,209 @@ class FormComponent extends Component {
   }
 
   render() {
-    const { validated, alert } = this.state;
+    const {
+      validated,
+      alert,
+      loading,
+      customer,
+      getCustomer,
+      existingCustomer,
+    } = this.state;
+
+    const newCustomerForm = (
+      <>
+        <div className="form-heading">New Customer</div>
+        <Form
+          key="newCustomerForm"
+          validated={validated}
+          onSubmit={this.handleAddCustomer}
+        >
+          <Form.Row>
+            <Form.Group as={Col} controlId="formGridFirstName">
+              <Form.Control
+                type="text"
+                placeholder="First Name"
+                name="first_name"
+                onChange={(e) => this.inputChangeHandler.call(this, e)}
+                value={customer.first_name}
+                required
+              />
+              <Form.Control.Feedback type="invalid">
+                Please provide a valid first name
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group as={Col} controlId="formGridLastName">
+              <Form.Control
+                type="text"
+                placeholder="Last Name"
+                name="last_name"
+                onChange={(e) => this.inputChangeHandler.call(this, e)}
+                value={customer.last_name}
+                required
+              />
+              <Form.Control.Feedback type="invalid">
+                Please provide a valid last name
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Form.Row>
+          <Form.Row>
+            <Form.Group as={Col} controlId="formGridMobileNo">
+              <Form.Control
+                type="text"
+                placeholder="Mobile No"
+                name="phone"
+                onChange={(e) => this.inputChangeHandler.call(this, e)}
+                value={customer.phone}
+                required
+              />
+              <Form.Control.Feedback type="invalid">
+                Please provide a valid mobile no.
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group as={Col} controlId="formGridEmailAddress">
+              <Form.Control
+                type="email"
+                placeholder="Email Address"
+                name="email"
+                onChange={(e) => this.inputChangeHandler.call(this, e)}
+                value={customer.email}
+                required
+              />
+              <Form.Control.Feedback type="invalid">
+                Please provide a valid email address
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Form.Row>
+          <Form.Row>
+            <Form.Group as={Col} md="4" controlId="formGridHouseNo">
+              <Form.Control
+                type="text"
+                placeholder="House No"
+                name="house_number"
+                onChange={(e) => this.inputChangeHandler.call(this, e)}
+                value={customer.house_number}
+                required
+              />
+              <Form.Control.Feedback type="invalid">
+                Please provide a valid house number
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group as={Col} md="8" controlId="formGridAddress">
+              <Form.Control
+                type="text"
+                placeholder="Address"
+                name="address"
+                onChange={(e) => this.inputChangeHandler.call(this, e)}
+                value={customer.address}
+                required
+              />
+              <Form.Control.Feedback type="invalid">
+                Please provide a valid address
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Form.Row>
+          <Form.Row>
+            <Form.Group as={Col} controlId="formGridLocality">
+              <Form.Control
+                type="text"
+                placeholder="Locality"
+                name="locality"
+                onChange={(e) => this.inputChangeHandler.call(this, e)}
+                value={customer.locality}
+                required
+              />
+              <Form.Control.Feedback type="invalid">
+                Please provide a valid locality
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Form.Row>
+          <Button variant="secondary" type="submit" block>
+            Save & Continue
+          </Button>
+        </Form>
+      </>
+    );
+
+    const existingCustomerForm = (
+      <>
+        <div className="form-heading">Existing Customer</div>
+        <Form
+          key="existingCustomerForm"
+          validated={validated}
+          onSubmit={this.handleGetCustomer}
+        >
+          <Form.Row>
+            <Form.Group as={Col} md="8" controlId="formGridEmailAddress">
+              <Form.Control
+                type="email"
+                placeholder="Email Address"
+                name="email"
+                onChange={(e) => this.inputChangeHandler2.call(this, e)}
+                value={getCustomer.email}
+                required
+              />
+              <Form.Control.Feedback type="invalid">
+                Please provide a valid email address
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Col md="4">
+              <Button variant="secondary" type="submit" block>
+                Get Address
+              </Button>
+            </Col>
+          </Form.Row>
+        </Form>
+      </>
+    );
+
+    const existingCustomerDisplay = (
+      <div className="display-wrapper">
+        <Row>
+          <Col>
+            <div className="display-title">First Name</div>
+            <div className="display-value">{customer.first_name}</div>
+          </Col>
+          <Col>
+            <div className="display-title">Last Name</div>
+            <div className="display-value">{customer.last_name}</div>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={5}>
+            <div className="display-title">Mobile No</div>
+            <div className="display-value">{customer.phone}</div>
+          </Col>
+          <Col md={7}>
+            <div className="display-title">Email Address</div>
+            <div className="display-value">{customer.email}</div>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={4}>
+            <div className="display-title">House No</div>
+            <div className="display-value">{customer.house_number}</div>
+          </Col>
+          <Col md={8}>
+            <div className="display-title">Address</div>
+            <div className="display-value">{customer.address}</div>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <div className="display-title">Locality</div>
+            <div className="display-value">{customer.locality}</div>
+          </Col>
+        </Row>
+        <Button
+          variant="secondary"
+          block
+          onClick={() => this.props.triggerOrderSave(customer)}
+        >
+          Proceed
+        </Button>
+      </div>
+    );
+
     return (
       <>
         <div className="overlay"></div>
@@ -119,129 +406,23 @@ class FormComponent extends Component {
           <div className="cross-btn"></div>
         </div>
         <div className="side-navigation">
+          <LoaderComponent loading={loading} />
           <div className="overlay-child">
             <div className="wrap">
-              <Alert variant={alert.variant} show={alert.show} dismissible>
+              <Alert
+                variant={alert.variant}
+                show={alert.show}
+                onClose={this.closeAlert}
+                dismissible
+              >
                 {alert.message}
               </Alert>
               <div className="header-title">
                 <span>Add Address</span>
               </div>
-              <div className="form-heading">Existing Customer</div>
-              <Form
-                key="existingCustomer"
-                validated={validated}
-                onSubmit={this.handleGetCustomer}
-              ></Form>
-              <div className="form-heading">Fill details below</div>
-              <Form
-                key="newCustomer"
-                validated={validated}
-                onSubmit={this.handleAddCustomer}
-              >
-                <Form.Row>
-                  <Form.Group as={Col} controlId="formGridFirstName">
-                    <Form.Control
-                      type="text"
-                      placeholder="First Name"
-                      name="first_name"
-                      onChange={(e) => this.inputChangeHandler.call(this, e)}
-                      value={this.state.formFields.first_name}
-                      required
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Please provide a valid first name
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formGridLastName">
-                    <Form.Control
-                      type="text"
-                      placeholder="Last Name"
-                      name="last_name"
-                      onChange={(e) => this.inputChangeHandler.call(this, e)}
-                      value={this.state.formFields.last_name}
-                      required
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Please provide a valid last name
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                  <Form.Group as={Col} controlId="formGridMobileNo">
-                    <Form.Control
-                      type="text"
-                      placeholder="Mobile No"
-                      name="phone"
-                      onChange={(e) => this.inputChangeHandler.call(this, e)}
-                      value={this.state.formFields.phone}
-                      required
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Please provide a valid mobile no.
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formGridEmailAddress">
-                    <Form.Control
-                      type="email"
-                      placeholder="Email Address"
-                      name="email"
-                      onChange={(e) => this.inputChangeHandler.call(this, e)}
-                      value={this.state.formFields.email}
-                      required
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Please provide a valid email address
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                  <Form.Group as={Col} controlId="formGridAddress">
-                    <Form.Control
-                      type="text"
-                      placeholder="Address"
-                      name="address"
-                      onChange={(e) => this.inputChangeHandler.call(this, e)}
-                      value={this.state.formFields.address}
-                      required
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Please provide a valid address
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="formGridHouseNo">
-                    <Form.Control
-                      type="text"
-                      placeholder="House No"
-                      name="house_number"
-                      onChange={(e) => this.inputChangeHandler.call(this, e)}
-                      value={this.state.formFields.house_number}
-                      required
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Please provide a valid house number
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                  <Form.Group as={Col} controlId="formGridLocality">
-                    <Form.Control
-                      type="text"
-                      placeholder="Locality"
-                      name="locality"
-                      onChange={(e) => this.inputChangeHandler.call(this, e)}
-                      value={this.state.formFields.locality}
-                      required
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Please provide a valid locality
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Form.Row>
-                <Button variant="secondary" type="submit" block>
-                  Save & Continue
-                </Button>
-              </Form>
+              {existingCustomerForm}
+              <hr></hr>
+              {existingCustomer ? existingCustomerDisplay : newCustomerForm}
             </div>
           </div>
         </div>

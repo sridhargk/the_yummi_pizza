@@ -4,9 +4,12 @@ import CartComponent from "../components/CartComponent";
 import FormComponent from "../components/FormComponent";
 import LoaderComponent from "../components/LoaderComponent";
 import { getPriceInEuros } from "../utils";
-import { addQuantity, subtractQuantity } from "../actions/cartActions";
+import {
+  addQuantity,
+  subtractQuantity,
+  removeItems,
+} from "../actions/cartActions";
 import { connect } from "react-redux";
-import { clear } from "redux-localstorage-simple";
 
 class CheckoutPage extends Component {
   constructor(props) {
@@ -25,7 +28,16 @@ class CheckoutPage extends Component {
     this.placeOrder = this.placeOrder.bind(this);
     this.getPriceDetails = this.getPriceDetails.bind(this);
     this.saveOrder = this.saveOrder.bind(this);
+    this.closeAlert = this.closeAlert.bind(this);
   }
+
+  closeAlert = () => {
+    this.setState({
+      alert: {
+        show: false,
+      },
+    });
+  };
 
   handleAddQuantity = (cartItem) => {
     this.props.addQuantity(cartItem);
@@ -114,15 +126,18 @@ class CheckoutPage extends Component {
       .then((responseData) => {
         if (responseData.success) {
           this.setState({
-            loading: false,
             alert: {
               variant: "success",
               message: responseData.message,
               show: true,
+              closeSidePanel: false,
             },
           });
-          clear();
           setTimeout(() => {
+            this.setState({
+              loading: false,
+            });
+            this.props.removeItems([]);
             window.location.href = "/";
           }, 3000);
         } else {
@@ -227,7 +242,12 @@ class CheckoutPage extends Component {
     return (
       <div className="main-section">
         <LoaderComponent loading={loading} />
-        <Alert variant={alert.variant} show={alert.show} dismissible>
+        <Alert
+          variant={alert.variant}
+          show={alert.show}
+          onClose={this.closeAlert}
+          dismissible
+        >
           {alert.message}
         </Alert>
         <Container fluid>
@@ -261,6 +281,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     addQuantity: (cartItem) => {
       dispatch(addQuantity(cartItem));
+    },
+    removeItems: (cartItem) => {
+      dispatch(removeItems(cartItem));
     },
   };
 };

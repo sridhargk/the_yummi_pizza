@@ -8,9 +8,9 @@ import {
   addToCart,
   addQuantity,
   subtractQuantity,
+  removeItems,
 } from "../actions/cartActions";
 import { connect } from "react-redux";
-import { clear } from "redux-localstorage-simple";
 
 class HomePage extends Component {
   constructor(props) {
@@ -37,6 +37,9 @@ class HomePage extends Component {
       .then((response) => response.json())
       .then(
         (result) => {
+          if (result.data.length === 0) {
+            this.props.removeItems([]);
+          }
           this.setState({
             products: result.data,
             loading: false,
@@ -100,9 +103,6 @@ class HomePage extends Component {
           </div>
         </div>
       );
-    }
-    if (products.length === 0) {
-      clear();
     }
     return (
       <div className="main-section">
@@ -174,6 +174,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     addQuantity: (cartItem) => {
       dispatch(addQuantity(cartItem));
+    },
+    removeItems: (cartItem) => {
+      dispatch(removeItems(cartItem));
     },
   };
 };

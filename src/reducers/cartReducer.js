@@ -2,6 +2,7 @@ import {
   ADD_TO_CART,
   SUB_QUANTITY,
   ADD_QUANTITY,
+  REMOVE_ITEMS,
 } from "../actions/cartActionLabels";
 
 const initialState = [];
@@ -23,6 +24,8 @@ export default function cartReducer(state = initialState, action = {}) {
       return updateCartItemUnits(cartItems, cartItem, "minus");
     case ADD_QUANTITY: // Add item quantity in cart
       return updateCartItemUnits(cartItems, cartItem);
+    case REMOVE_ITEMS:
+      return [];
     default:
       return state;
   }
